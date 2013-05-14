@@ -1,0 +1,6 @@
+*.a
+*.o
+*.so
+SimpleSimulator
+TuioDemo
+TuioDump
