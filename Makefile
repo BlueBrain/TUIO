@@ -6,7 +6,7 @@
 ENDIANESS=OSC_HOST_LITTLE_ENDIAN
 PLATFORM=$(shell uname)
 
-FRAMEWORKS = -lGL -lGLU -lglut
+FRAMEWORKS = -lGL -lGLU -lglut -lpthread
 
 SDL_CFLAGS  := $(shell sdl-config --cflags)
 SDL_LDFLAGS := $(shell sdl-config --libs)
@@ -18,7 +18,7 @@ TUIO_STATIC  = libTUIO.a
 TUIO_SHARED  = libTUIO.so
 
 INCLUDES = -I./TUIO -I./oscpack
-CFLAGS  = -Wall -O3 $(SDL_CFLAGS)
+CFLAGS  = -Wall -O3 $(SDL_CFLAGS) -fPIC
 #CFLAGS  = -g -Wall -O3 $(SDL_CFLAGS)
 CXXFLAGS = $(CFLAGS) $(INCLUDES) -D$(ENDIANESS)
 SHARED_OPTIONS = -shared -Wl,-soname,$(TUIO_SHARED)
