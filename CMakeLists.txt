@@ -11,6 +11,8 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake
 include(GitExternal)
 include(Common)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-result")
+
 add_definitions(-DOSC_HOST_LITTLE_ENDIAN)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/TUIO
                     ${CMAKE_CURRENT_LIST_DIR}/oscpack)
@@ -62,7 +64,7 @@ set(IP_HEADERS
 
 add_library(TUIO SHARED ${TUIO_SOURCES} ${OSC_SOURCES})
 target_link_libraries(TUIO pthread)
-add_library(TUIO_static STATIC ${TUIO_SOURCES} ${OSC_SOURCES})
+add_library(TUIO_static STATIC ${TUIO_SOURCES} ${OSC_SOURCES} ${TUIO_HEADERS} ${OSC_HEADERS})
 
 install(FILES ${TUIO_HEADERS}
         DESTINATION include/TUIO COMPONENT dev)
