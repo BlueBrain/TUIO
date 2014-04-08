@@ -4,3 +4,7 @@
 SimpleSimulator
 TuioDemo
 TuioDump
+CMake/common/
+CMakeLists.txt.user
+GNUmakefile
+.travis.yml
