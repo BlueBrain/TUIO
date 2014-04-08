@@ -1,31 +1,31 @@
 /*
-	oscpack -- Open Sound Control packet manipulation library
-	http://www.audiomulch.com/~rossb/oscpack
+    oscpack -- Open Sound Control packet manipulation library
+    http://www.audiomulch.com/~rossb/oscpack
 
-	Copyright (c) 2004-2005 Ross Bencina <rossb@audiomulch.com>
+    Copyright (c) 2004-2005 Ross Bencina <rossb@audiomulch.com>
 
-	Permission is hereby granted, free of charge, to any person obtaining
-	a copy of this software and associated documentation files
-	(the "Software"), to deal in the Software without restriction,
-	including without limitation the rights to use, copy, modify, merge,
-	publish, distribute, sublicense, and/or sell copies of the Software,
-	and to permit persons to whom the Software is furnished to do so,
-	subject to the following conditions:
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files
+    (the "Software"), to deal in the Software without restriction,
+    including without limitation the rights to use, copy, modify, merge,
+    publish, distribute, sublicense, and/or sell copies of the Software,
+    and to permit persons to whom the Software is furnished to do so,
+    subject to the following conditions:
 
-	The above copyright notice and this permission notice shall be
-	included in all copies or substantial portions of the Software.
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
 
-	Any person wishing to distribute modifications to the Software is
-	requested to send the modifications to the original developer so that
-	they can be incorporated into the canonical version.
+    Any person wishing to distribute modifications to the Software is
+    requested to send the modifications to the original developer so that
+    they can be incorporated into the canonical version.
 
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
-	ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-	CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-	WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+    ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #ifndef INCLUDED_OSCRECEIVEDELEMENTS_H
 #define INCLUDED_OSCRECEIVEDELEMENTS_H
@@ -106,14 +106,14 @@ private:
 
 class ReceivedBundleElementIterator{
 public:
-	ReceivedBundleElementIterator( const char *sizePtr )
+    ReceivedBundleElementIterator( const char *sizePtr )
         : value_( sizePtr ) {}
 
-	ReceivedBundleElementIterator operator++()
-	{
+    ReceivedBundleElementIterator operator++()
+    {
         Advance();
         return *this;
-	}
+    }
 
     ReceivedBundleElementIterator operator++(int)
     {
@@ -122,17 +122,17 @@ public:
         return old;
     }
 
-	const ReceivedBundleElement& operator*() const { return value_; }
+    const ReceivedBundleElement& operator*() const { return value_; }
 
     const ReceivedBundleElement* operator->() const { return &value_; }
 
-	friend bool operator==(const ReceivedBundleElementIterator& lhs,
+    friend bool operator==(const ReceivedBundleElementIterator& lhs,
             const ReceivedBundleElementIterator& rhs );
 
 private:
-	ReceivedBundleElement value_;
+    ReceivedBundleElement value_;
 
-	void Advance() { value_.size_ = value_.Contents() + value_.Size(); }
+    void Advance() { value_.size_ = value_.Contents() + value_.Size(); }
 
     bool IsEqualTo( const ReceivedBundleElementIterator& rhs ) const
     {
@@ -142,26 +142,26 @@ private:
 
 inline bool operator==(const ReceivedBundleElementIterator& lhs,
         const ReceivedBundleElementIterator& rhs )
-{	
-	return lhs.IsEqualTo( rhs );
+{
+    return lhs.IsEqualTo( rhs );
 }
 
 inline bool operator!=(const ReceivedBundleElementIterator& lhs,
         const ReceivedBundleElementIterator& rhs )
 {
-	return !( lhs == rhs );
+    return !( lhs == rhs );
 }
 
 
 class ReceivedMessageArgument{
 public:
-	ReceivedMessageArgument( const char *typeTag, const char *argument )
-		: typeTag_( typeTag )
-		, argument_( argument ) {}
+    ReceivedMessageArgument( const char *typeTag, const char *argument )
+        : typeTag_( typeTag )
+        , argument_( argument ) {}
 
     friend class ReceivedMessageArgumentIterator;
-    
-	const char TypeTag() const { return *typeTag_; }
+
+    char TypeTag() const { return *typeTag_; }
 
     // the unchecked methods below don't check whether the argument actually
     // is of the specified type. they should only be used if you've already
@@ -218,23 +218,23 @@ public:
     bool IsBlob() const { return *typeTag_ == BLOB_TYPE_TAG; }
     void AsBlob( const void*& data, unsigned long& size ) const;
     void AsBlobUnchecked( const void*& data, unsigned long& size ) const;
-    
+
 private:
-	const char *typeTag_;
-	const char *argument_;
+    const char *typeTag_;
+    const char *argument_;
 };
 
 
 class ReceivedMessageArgumentIterator{
 public:
-	ReceivedMessageArgumentIterator( const char *typeTags, const char *arguments )
+    ReceivedMessageArgumentIterator( const char *typeTags, const char *arguments )
         : value_( typeTags, arguments ) {}
 
-	ReceivedMessageArgumentIterator operator++()
-	{
+    ReceivedMessageArgumentIterator operator++()
+    {
         Advance();
         return *this;
-	}
+    }
 
     ReceivedMessageArgumentIterator operator++(int)
     {
@@ -243,17 +243,17 @@ public:
         return old;
     }
 
-	const ReceivedMessageArgument& operator*() const { return value_; }
+    const ReceivedMessageArgument& operator*() const { return value_; }
 
     const ReceivedMessageArgument* operator->() const { return &value_; }
 
-	friend bool operator==(const ReceivedMessageArgumentIterator& lhs,
+    friend bool operator==(const ReceivedMessageArgumentIterator& lhs,
             const ReceivedMessageArgumentIterator& rhs );
 
 private:
-	ReceivedMessageArgument value_;
+    ReceivedMessageArgument value_;
 
-	void Advance();
+    void Advance();
 
     bool IsEqualTo( const ReceivedMessageArgumentIterator& rhs ) const
     {
@@ -263,14 +263,14 @@ private:
 
 inline bool operator==(const ReceivedMessageArgumentIterator& lhs,
         const ReceivedMessageArgumentIterator& rhs )
-{	
-	return lhs.IsEqualTo( rhs );
+{
+    return lhs.IsEqualTo( rhs );
 }
 
 inline bool operator!=(const ReceivedMessageArgumentIterator& lhs,
         const ReceivedMessageArgumentIterator& rhs )
-{	
-	return !( lhs == rhs );
+{
+    return !( lhs == rhs );
 }
 
 
@@ -282,7 +282,7 @@ class ReceivedMessageArgumentStream{
         , end_( end ) {}
 
     ReceivedMessageArgumentIterator p_, end_;
-    
+
 public:
 
     // end of stream
@@ -307,7 +307,7 @@ public:
 
         rhs = (*p_++).AsInt32();
         return *this;
-    }     
+    }
 
     ReceivedMessageArgumentStream& operator>>( float& rhs )
     {
@@ -353,7 +353,7 @@ public:
         rhs = (*p_++).AsInt64();
         return *this;
     }
-    
+
     ReceivedMessageArgumentStream& operator>>( TimeTag& rhs )
     {
         if( Eos() )
@@ -380,7 +380,7 @@ public:
         (*p_++).AsBlob( rhs.data, rhs.size );
         return *this;
     }
-    
+
     ReceivedMessageArgumentStream& operator>>( const char*& rhs )
     {
         if( Eos() )
@@ -389,7 +389,7 @@ public:
         rhs = (*p_++).AsString();
         return *this;
     }
-    
+
     ReceivedMessageArgumentStream& operator>>( Symbol& rhs )
     {
         if( Eos() )
@@ -399,7 +399,7 @@ public:
         return *this;
     }
 
-    ReceivedMessageArgumentStream& operator>>( MessageTerminator& rhs )
+    ReceivedMessageArgumentStream& operator>>( MessageTerminator& )
     {
         if( !Eos() )
             throw ExcessArgumentException();
@@ -415,25 +415,25 @@ public:
     explicit ReceivedMessage( const ReceivedPacket& packet );
     explicit ReceivedMessage( const ReceivedBundleElement& bundleElement );
 
-	const char *AddressPattern() const { return addressPattern_; }
+    const char *AddressPattern() const { return addressPattern_; }
 
-	// Support for non-standad SuperCollider integer address patterns:
-	bool AddressPatternIsUInt32() const;
-	uint32 AddressPatternAsUInt32() const;
+    // Support for non-standad SuperCollider integer address patterns:
+    bool AddressPatternIsUInt32() const;
+    uint32 AddressPatternAsUInt32() const;
 
-	unsigned long ArgumentCount() const { return static_cast<unsigned long>(typeTagsEnd_ - typeTagsBegin_); }
+    unsigned long ArgumentCount() const { return static_cast<unsigned long>(typeTagsEnd_ - typeTagsBegin_); }
 
     const char *TypeTags() const { return typeTagsBegin_; }
 
 
     typedef ReceivedMessageArgumentIterator const_iterator;
-    
-	ReceivedMessageArgumentIterator ArgumentsBegin() const
+
+    ReceivedMessageArgumentIterator ArgumentsBegin() const
     {
         return ReceivedMessageArgumentIterator( typeTagsBegin_, arguments_ );
     }
-     
-	ReceivedMessageArgumentIterator ArgumentsEnd() const
+
+    ReceivedMessageArgumentIterator ArgumentsEnd() const
     {
         return ReceivedMessageArgumentIterator( typeTagsEnd_, 0 );
     }
@@ -444,9 +444,9 @@ public:
     }
 
 private:
-	const char *addressPattern_;
-	const char *typeTagsBegin_;
-	const char *typeTagsEnd_;
+    const char *addressPattern_;
+    const char *typeTagsBegin_;
+    const char *typeTagsEnd_;
     const char *arguments_;
 };
 
@@ -462,13 +462,13 @@ public:
     unsigned long ElementCount() const { return elementCount_; }
 
     typedef ReceivedBundleElementIterator const_iterator;
-    
-	ReceivedBundleElementIterator ElementsBegin() const
+
+    ReceivedBundleElementIterator ElementsBegin() const
     {
         return ReceivedBundleElementIterator( timeTag_ + 8 );
     }
-     
-	ReceivedBundleElementIterator ElementsEnd() const
+
+    ReceivedBundleElementIterator ElementsEnd() const
     {
         return ReceivedBundleElementIterator( end_ );
     }

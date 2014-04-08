@@ -2,13 +2,14 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(TUIO)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
-
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "4")
 set(VERSION_PATCH "0")
 
-include(FindPackages)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake
+  ${CMAKE_SOURCE_DIR}/CMake/common)
+include(GitExternal)
+include(Common)
 
 add_definitions(-DOSC_HOST_LITTLE_ENDIAN)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/TUIO

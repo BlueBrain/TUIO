@@ -74,7 +74,7 @@ TuioClient::TuioClient(int port)
 : socket      (NULL)
 , currentFrame(-1)
 , maxCursorID (-1)
-, thread      (NULL)
+, thread      (0)
 , locked      (false)
 , connected   (false)
 {
@@ -112,10 +112,9 @@ void TuioClient::ProcessBundle( const ReceivedBundle& b, const IpEndpointName& r
 
 }
 
-void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointName& remoteEndpoint) {
+void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointName& ) {
     try {
         ReceivedMessageArgumentStream args = msg.ArgumentStream();
-        ReceivedMessage::const_iterator arg = msg.ArgumentsBegin();
 
         if( strcmp( msg.AddressPattern(), "/tuio/2Dobj" ) == 0 ){
 
@@ -217,14 +216,14 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
                             default:
 
                                 lockObjectList();
-                                std::list<TuioObject*>::iterator iter;
-                                for (iter=objectList.begin(); iter != objectList.end(); iter++) {
-                                    if((*iter)->getSessionID()==tobj->getSessionID()) {
-                                        frameObject = (*iter);
+                                std::list<TuioObject*>::iterator it;
+                                for (it=objectList.begin(); it != objectList.end(); it++) {
+                                    if((*it)->getSessionID()==tobj->getSessionID()) {
+                                        frameObject = (*it);
                                         break;
                                     }
                                 }
-                                if(iter==objectList.end()) break;
+                                if(it==objectList.end()) break;
 
                                 if ( (tobj->getX()!=frameObject->getX() && tobj->getXSpeed()==0) || (tobj->getY()!=frameObject->getY() && tobj->getYSpeed()==0) )
                                     frameObject->update(currentTime,tobj->getX(),tobj->getY(),tobj->getAngle());
@@ -376,8 +375,8 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
                                 if (((int)(cursorList.size())<=maxCursorID) && ((int)(freeCursorList.size())>0)) {
                                     std::list<TuioCursor*>::iterator closestCursor = freeCursorList.begin();
 
-                                    for(std::list<TuioCursor*>::iterator iter = freeCursorList.begin();iter!= freeCursorList.end(); iter++) {
-                                        if((*iter)->getDistance(tcur)<(*closestCursor)->getDistance(tcur)) closestCursor = iter;
+                                    for(std::list<TuioCursor*>::iterator it = freeCursorList.begin();it!= freeCursorList.end(); it++) {
+                                        if((*it)->getDistance(tcur)<(*closestCursor)->getDistance(tcur)) closestCursor = it;
                                     }
 
                                     TuioCursor *freeCursor = (*closestCursor);
@@ -399,10 +398,10 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
                             default:
 
                                 lockCursorList();
-                                std::list<TuioCursor*>::iterator iter;
-                                for (iter=cursorList.begin(); iter != cursorList.end(); iter++) {
-                                    if((*iter)->getSessionID()==tcur->getSessionID()) {
-                                        frameCursor = (*iter);
+                                std::list<TuioCursor*>::iterator it;
+                                for (it=cursorList.begin(); it != cursorList.end(); it++) {
+                                    if((*it)->getSessionID()==tcur->getSessionID()) {
+                                        frameCursor = (*it);
                                         break;
                                     }
                                 }
