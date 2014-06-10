@@ -9,6 +9,13 @@ set(VERSION_PATCH "0")
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake
   ${CMAKE_SOURCE_DIR}/CMake/common)
 include(GitExternal)
+
+# WAR: no cppcheck desired
+set(__add_cppcheck 1)
+function(add_cppcheck)
+endfunction()
+add_custom_target(cppcheck)
+
 include(Common)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-result")
