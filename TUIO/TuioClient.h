@@ -43,6 +43,7 @@
 #include "TuioListener.h"
 #include "TuioObject.h"
 #include "TuioCursor.h"
+#include <tuio/api.h>
 
 namespace TUIO {
 	
@@ -59,7 +60,7 @@ namespace TUIO {
 	 * @author Martin Kaltenbrunner
 	 * @version 1.4
 	 */ 
-	class TuioClient : public PacketListener { 
+	class TuioClient : public PacketListener {
 		
 	public:
 		/**
@@ -67,12 +68,12 @@ namespace TUIO {
 		 *
 		 * @param  port  the incoming TUIO UDP port number, defaults to 3333 if no argument is provided
 		 */
-		TuioClient(int port=3333);
+		TUIO_API TuioClient( int port = 3333 );
 
 		/**
 		 * The destructor is doing nothing in particular. 
 		 */
-		~TuioClient();
+		TUIO_API ~TuioClient( );
 		
 		/**
 		 * The TuioClient starts listening to TUIO messages on the configured UDP port
@@ -80,32 +81,32 @@ namespace TUIO {
 		 *
 		 * @param  lock  running in the background if set to false (default)
 		 */
-		void connect(bool lock=false);
+		TUIO_API void connect( bool lock = false );
 
 		/**
 		 * The TuioClient stops listening to TUIO messages on the configured UDP port
 		 */
-		void disconnect();
+		TUIO_API void disconnect( );
 
 		/**
 		 * Returns true if this TuioClient is currently connected.
 		 * @return	true if this TuioClient is currently connected
 		 */
-		bool isConnected() { return connected; }
+		TUIO_API bool isConnected( ) { return connected; }
 				
 		/**
 		 * Adds the provided TuioListener to the list of registered TUIO event listeners
 		 *
 		 * @param  listener  the TuioListener to add
 		 */
-		void addTuioListener(TuioListener *listener);
+		TUIO_API void addTuioListener( TuioListener *listener );
 
 		/**
 		 * Removes the provided TuioListener from the list of registered TUIO event listeners
 		 *
 		 * @param  listener  the TuioListener to remove
 		 */
-		void removeTuioListener(TuioListener *listener);
+		TUIO_API void removeTuioListener( TuioListener *listener );
 
 		/**
 		 * Removes all TuioListener from the list of registered TUIO event listeners
@@ -119,14 +120,14 @@ namespace TUIO {
 		 *
 		 * @return  a List of all currently active TuioObjects
 		 */
-		std::list<TuioObject*> getTuioObjects();
+		TUIO_API std::list<TuioObject*> getTuioObjects( );
 		
 		/**
 		 * Returns a List of all currently active TuioCursors
 		 *
 		 * @return  a List of all currently active TuioCursors
 		 */
-		std::list<TuioCursor*> getTuioCursors();
+		TUIO_API std::list<TuioCursor*> getTuioCursors( );
 
 		/**
 		 * Returns the TuioObject corresponding to the provided Session ID
@@ -134,7 +135,7 @@ namespace TUIO {
 		 *
 		 * @return  an active TuioObject corresponding to the provided Session ID or NULL
 		 */
-		TuioObject* getTuioObject(long s_id);
+		TUIO_API TuioObject* getTuioObject( long s_id );
 
 		/**
 		 * Returns the TuioCursor corresponding to the provided Session ID
@@ -142,29 +143,29 @@ namespace TUIO {
 		 *
 		 * @return  an active TuioCursor corresponding to the provided Session ID or NULL
 		 */
-		TuioCursor* getTuioCursor(long s_id);
+		TUIO_API TuioCursor* getTuioCursor( long s_id );
 
 		/**
 		 * Locks the TuioObject list in order to avoid updates during access
 		 */
-		void lockObjectList();
+		TUIO_API void lockObjectList( );
 
 		/**
 		 * Releases the lock of the TuioObject list
 		 */
-		void unlockObjectList();
+		TUIO_API void unlockObjectList( );
 
 		/**
 		 * Locks the TuioCursor list in order to avoid updates during access
 		 */
-		void lockCursorList();
+		TUIO_API void lockCursorList( );
 
 		/**
 		 * Releases the lock of the TuioCursor list
 		 */
-		void unlockCursorList();
+		TUIO_API void unlockCursorList( );
 
-		void ProcessPacket( const char *data, int size, const IpEndpointName &remoteEndpoint );
+		TUIO_API void ProcessPacket( const char *data, int size, const IpEndpointName &remoteEndpoint );
 		UdpListeningReceiveSocket *socket;
 				
 	protected:

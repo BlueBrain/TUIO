@@ -17,14 +17,20 @@ endfunction()
 add_custom_target(cppcheck)
 
 include(Common)
+include(FindPackages)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-result")
+if(NOT MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-result")
+else()
+  add_definitions(/wd4267)
+endif()
 
 add_definitions(-DOSC_HOST_LITTLE_ENDIAN)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/TUIO
                     ${CMAKE_CURRENT_LIST_DIR}/oscpack)
 
 set(TUIO_HEADERS
+  ${COMMON_INCLUDES}
   TUIO/TuioClient.h
   TUIO/TuioContainer.h
   TUIO/TuioCursor.h
@@ -57,9 +63,19 @@ set(OSC_SOURCES
   oscpack/osc/OscOutboundPacketStream.cpp
   oscpack/osc/OscReceivedElements.cpp
   oscpack/osc/OscPrintReceivedElements.cpp
-  oscpack/ip/posix/NetworkingUtils.cpp
-  oscpack/ip/posix/UdpSocket.cpp
 )
+
+if(MSVC)
+  list(APPEND OSC_SOURCES
+    oscpack/ip/win32/NetworkingUtils.cpp
+    oscpack/ip/win32/UdpSocket.cpp
+  )
+else()
+  list(APPEND OSC_SOURCES
+    oscpack/ip/posix/NetworkingUtils.cpp
+    oscpack/ip/posix/UdpSocket.cpp
+  )
+endif()
 
 set(IP_HEADERS
   oscpack/ip/IpEndpointName.h
@@ -69,9 +85,15 @@ set(IP_HEADERS
   oscpack/ip/UdpSocket.h
 )
 
-add_library(TUIO SHARED ${TUIO_SOURCES} ${OSC_SOURCES})
-target_link_libraries(TUIO pthread)
+add_library(TUIO SHARED ${TUIO_SOURCES} ${OSC_SOURCES} ${TUIO_HEADERS} ${OSC_HEADERS})
+if(MSVC)
+  target_link_libraries(TUIO mswsock winmm ws2_32)
+else()
+  target_link_libraries(TUIO pthread)
+endif()
+
 add_library(TUIO_static STATIC ${TUIO_SOURCES} ${OSC_SOURCES} ${TUIO_HEADERS} ${OSC_HEADERS})
+set_target_properties(TUIO_static PROPERTIES COMPILE_DEFINITIONS "TUIO_STATIC")
 
 install(FILES ${TUIO_HEADERS}
         DESTINATION include/TUIO COMPONENT dev)
