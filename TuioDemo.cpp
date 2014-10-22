@@ -61,7 +61,7 @@ void TuioDemo::removeTuioCursor(TuioCursor *tcur) {
 		std::cout << "del cur " << tcur->getCursorID() << " (" <<  tcur->getSessionID() << ")" << std::endl;
 }
 
-void TuioDemo::refresh(TuioTime frameTime) {
+void TuioDemo::refresh(TuioTime /*frameTime*/) {
 	//drawObjects();
 }
 
