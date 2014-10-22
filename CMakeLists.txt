@@ -16,6 +16,7 @@ function(add_cppcheck)
 endfunction()
 add_custom_target(cppcheck)
 
+set(PROJECT_INCLUDE_NAME TUIO)
 include(Common)
 include(FindPackages)
 

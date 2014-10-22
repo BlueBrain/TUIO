@@ -43,7 +43,7 @@
 #include "TuioListener.h"
 #include "TuioObject.h"
 #include "TuioCursor.h"
-#include <tuio/api.h>
+#include <TUIO/api.h>
 
 namespace TUIO {
 	
