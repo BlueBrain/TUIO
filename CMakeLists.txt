@@ -25,6 +25,9 @@ if(NOT MSVC)
 else()
   add_definitions(/wd4267)
 endif()
+if(CMAKE_COMPILER_IS_CLANG)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-header-hygiene -Wno-deprecated-declarations -Wno-unused-private-field")
+endif()
 
 add_definitions(-DOSC_HOST_LITTLE_ENDIAN)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/TUIO
