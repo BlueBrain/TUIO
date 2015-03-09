@@ -33,9 +33,9 @@
 #include <list>
 #include <algorithm>
 
-#include "osc/OscOutboundPacketStream.h"
-#include "ip/NetworkingUtils.h"
-#include "ip/UdpSocket.h"
+#include "oscpack/osc/OscOutboundPacketStream.h"
+#include "oscpack/ip/NetworkingUtils.h"
+#include "oscpack/ip/UdpSocket.h"
 
 #include "TuioObject.h"
 #include "TuioCursor.h"

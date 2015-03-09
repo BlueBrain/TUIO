@@ -14,7 +14,9 @@ include(GitExternal)
 set(__add_cppcheck 1)
 function(add_cppcheck)
 endfunction()
-add_custom_target(cppcheck)
+if(NOT TARGET cppcheck)
+  add_custom_target(cppcheck)
+endif()
 
 set(PROJECT_INCLUDE_NAME TUIO)
 include(Common)
@@ -102,9 +104,9 @@ set_target_properties(TUIO_static PROPERTIES COMPILE_DEFINITIONS "TUIO_STATIC")
 install(FILES ${TUIO_HEADERS}
         DESTINATION include/TUIO COMPONENT dev)
 install(FILES ${OSC_HEADERS}
-        DESTINATION include/TUIO/osc COMPONENT dev)
+        DESTINATION include/TUIO/oscpack/osc COMPONENT dev)
 install(FILES ${IP_HEADERS}
-        DESTINATION include/TUIO/ip COMPONENT dev)
+        DESTINATION include/TUIO/oscpack/ip COMPONENT dev)
 install(TARGETS TUIO TUIO_static
         ARCHIVE DESTINATION lib COMPONENT dev
         RUNTIME DESTINATION bin COMPONENT lib
@@ -127,3 +129,6 @@ if(GLUT_FOUND AND OPENGL_FOUND AND SDL_FOUND)
   install(TARGETS TuioDemo SimpleSimulator
           DESTINATION bin COMPONENT apps)
 endif()
+
+include(PackageConfig)
+
