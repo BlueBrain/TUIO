@@ -2,36 +2,59 @@
 
 include(System)
 list(APPEND FIND_PACKAGES_DEFINES ${SYSTEM})
+# Copyright (c) 2014 Stefan.Eilemann@epfl.ch
+
+# Provides common_package(Name args) which improves find_package.
+# First invokes find_package with all the given arguments, and then
+# falls back to using pkg_config if available. The pkg_config path
+# does only implement the version, REQUIRED and QUIET find_package
+# arguments (e.g. no COMPONENTS)
+
 find_package(PkgConfig)
+set(ENV{PKG_CONFIG_PATH}
+  "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
 
-set(ENV{PKG_CONFIG_PATH} "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
-if(PKG_CONFIG_EXECUTABLE)
-  find_package(GLUT )
-  if((NOT GLUT_FOUND) AND (NOT GLUT_FOUND))
-    pkg_check_modules(GLUT GLUT)
+macro(COMMON_PACKAGE Name)
+  string(TOUPPER ${Name} COMMON_PACKAGE_NAME)
+  set(COMMON_PACKAGE_ARGS ${ARGN}) # ARGN is not a list. make one.
+  set(COMMON_PACKAGE_VERSION)
+
+  if(COMMON_PACKAGE_ARGS)
+    list(GET COMMON_PACKAGE_ARGS 0 COMMON_PACKAGE_VERSION)
+    if(COMMON_PACKAGE_VERSION MATCHES "^[0-9.]+$") # is a version
+      set(COMMON_PACKAGE_VERSION ">=${COMMON_PACKAGE_VERSION}")
+    else()
+      set(COMMON_PACKAGE_VERSION)
+    endif()
   endif()
-else()
-  find_package(GLUT  )
-endif()
 
-if(PKG_CONFIG_EXECUTABLE)
-  find_package(OpenGL )
-  if((NOT OpenGL_FOUND) AND (NOT OPENGL_FOUND))
-    pkg_check_modules(OpenGL OpenGL)
+  list(FIND COMMON_PACKAGE_ARGS "QUIET" COMMON_PACKAGE_QUIET_POS)
+  if(COMMON_PACKAGE_QUIET_POS EQUAL -1)
+    set(COMMON_PACKAGE_QUIET)
+  else()
+    set(COMMON_PACKAGE_QUIET "QUIET")
   endif()
-else()
-  find_package(OpenGL  )
-endif()
 
-if(PKG_CONFIG_EXECUTABLE)
-  find_package(SDL )
-  if((NOT SDL_FOUND) AND (NOT SDL_FOUND))
-    pkg_check_modules(SDL SDL)
+  list(FIND COMMON_PACKAGE_ARGS "REQUIRED" COMMON_PACKAGE_REQUIRED_POS)
+  if(COMMON_PACKAGE_REQUIRED_POS EQUAL -1) # Optional find
+    find_package(${Name} ${COMMON_PACKAGE_ARGS}) # try standard cmake way
+    if((NOT ${Name}_FOUND) AND (NOT ${COMMON_PACKAGE_NAME}_FOUND) AND PKG_CONFIG_EXECUTABLE)
+      pkg_check_modules(${Name} ${Name}${COMMON_PACKAGE_VERSION}
+        ${COMMON_PACKAGE_QUIET}) # try pkg_config way
+    endif()
+  else() # required find
+    list(REMOVE_AT COMMON_PACKAGE_ARGS ${COMMON_PACKAGE_REQUIRED_POS})
+    find_package(${Name} ${COMMON_PACKAGE_ARGS}) # try standard cmake way
+    if((NOT ${Name}_FOUND) AND (NOT ${COMMON_PACKAGE_NAME}_FOUND) AND PKG_CONFIG_EXECUTABLE)
+      pkg_check_modules(${Name} REQUIRED ${Name}${COMMON_PACKAGE_VERSION}
+        ${COMMON_PACKAGE_QUIET}) # try pkg_config way (and fail if needed)
+    endif()
   endif()
-else()
-  find_package(SDL  )
-endif()
+endmacro()
 
+common_package(GLUT    )
+common_package(OpenGL    )
+common_package(SDL    )
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/CMake/FindPackagesPost.cmake)
   include(${PROJECT_SOURCE_DIR}/CMake/FindPackagesPost.cmake)
@@ -46,10 +69,16 @@ elseif(GLUT_FOUND)
 endif()
 if(GLUT_name)
   list(APPEND FIND_PACKAGES_DEFINES TUIO_USE_GLUT)
+  if(NOT COMMON_LIBRARY_TYPE MATCHES "SHARED")
+    list(APPEND TUIO_DEPENDENT_LIBRARIES GLUT)
+  endif()
   set(FIND_PACKAGES_FOUND "${FIND_PACKAGES_FOUND} GLUT")
   link_directories(${${GLUT_name}_LIBRARY_DIRS})
   if(NOT "${${GLUT_name}_INCLUDE_DIRS}" MATCHES "-NOTFOUND")
     include_directories(${${GLUT_name}_INCLUDE_DIRS})
+  endif()
+  if(NOT "${${GLUT_name}_INCLUDE_DIR}" MATCHES "-NOTFOUND")
+    include_directories(${${GLUT_name}_INCLUDE_DIR})
   endif()
 endif()
 
@@ -62,10 +91,16 @@ elseif(OpenGL_FOUND)
 endif()
 if(OpenGL_name)
   list(APPEND FIND_PACKAGES_DEFINES TUIO_USE_OPENGL)
+  if(NOT COMMON_LIBRARY_TYPE MATCHES "SHARED")
+    list(APPEND TUIO_DEPENDENT_LIBRARIES OpenGL)
+  endif()
   set(FIND_PACKAGES_FOUND "${FIND_PACKAGES_FOUND} OpenGL")
   link_directories(${${OpenGL_name}_LIBRARY_DIRS})
   if(NOT "${${OpenGL_name}_INCLUDE_DIRS}" MATCHES "-NOTFOUND")
     include_directories(${${OpenGL_name}_INCLUDE_DIRS})
+  endif()
+  if(NOT "${${OpenGL_name}_INCLUDE_DIR}" MATCHES "-NOTFOUND")
+    include_directories(${${OpenGL_name}_INCLUDE_DIR})
   endif()
 endif()
 
@@ -78,10 +113,16 @@ elseif(SDL_FOUND)
 endif()
 if(SDL_name)
   list(APPEND FIND_PACKAGES_DEFINES TUIO_USE_SDL)
+  if(NOT COMMON_LIBRARY_TYPE MATCHES "SHARED")
+    list(APPEND TUIO_DEPENDENT_LIBRARIES SDL)
+  endif()
   set(FIND_PACKAGES_FOUND "${FIND_PACKAGES_FOUND} SDL")
   link_directories(${${SDL_name}_LIBRARY_DIRS})
   if(NOT "${${SDL_name}_INCLUDE_DIRS}" MATCHES "-NOTFOUND")
     include_directories(${${SDL_name}_INCLUDE_DIRS})
+  endif()
+  if(NOT "${${SDL_name}_INCLUDE_DIR}" MATCHES "-NOTFOUND")
+    include_directories(${${SDL_name}_INCLUDE_DIR})
   endif()
 endif()
 
