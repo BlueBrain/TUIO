@@ -18,9 +18,12 @@ if(NOT TARGET cppcheck)
   add_custom_target(cppcheck)
 endif()
 
-set(PROJECT_INCLUDE_NAME TUIO)
 include(Common)
-include(FindPackages)
+
+common_package(GLUT)
+common_package(OpenGL)
+common_package(SDL)
+common_package_post()
 
 if(NOT MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-result")
@@ -35,8 +38,7 @@ add_definitions(-DOSC_HOST_LITTLE_ENDIAN)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/TUIO
                     ${CMAKE_CURRENT_LIST_DIR}/oscpack)
 
-set(TUIO_HEADERS
-  ${COMMON_INCLUDES}
+set(TUIO_PUBLIC_HEADERS
   TUIO/TuioClient.h
   TUIO/TuioContainer.h
   TUIO/TuioCursor.h
@@ -53,7 +55,7 @@ set(TUIO_SOURCES
   TUIO/TuioTime.cpp
 )
 
-set(OSC_HEADERS
+set(OSC_PUBLIC_HEADERS
   oscpack/osc/MessageMappingOscPacketListener.h
   oscpack/osc/OscOutboundPacketStream.h
   oscpack/osc/OscReceivedElements.h
@@ -62,6 +64,11 @@ set(OSC_HEADERS
   oscpack/osc/OscTypes.h
   oscpack/osc/OscHostEndianness.h
   oscpack/osc/OscPrintReceivedElements.h
+  oscpack/ip/IpEndpointName.h
+  oscpack/ip/NetworkingUtils.h
+  oscpack/ip/PacketListener.h
+  oscpack/ip/TimerListener.h
+  oscpack/ip/UdpSocket.h
 )
 
 set(OSC_SOURCES
@@ -83,52 +90,37 @@ else()
   )
 endif()
 
-set(IP_HEADERS
-  oscpack/ip/IpEndpointName.h
-  oscpack/ip/NetworkingUtils.h
-  oscpack/ip/PacketListener.h
-  oscpack/ip/TimerListener.h
-  oscpack/ip/UdpSocket.h
-)
+set(OSC_INCLUDE_NAME osc)
+set(OSC_LIBRARY_TYPE SHARED STATIC)
+common_library(OSC)
 
-add_library(TUIO SHARED ${TUIO_SOURCES} ${OSC_SOURCES} ${TUIO_HEADERS} ${OSC_HEADERS})
+set(TUIO_LINK_LIBRARIES OSC)
 if(MSVC)
-  target_link_libraries(TUIO mswsock winmm ws2_32)
+  list(APPEND TUIO_LINK_LIBRARIES mswsock winmm ws2_32)
 else()
-  target_link_libraries(TUIO pthread)
+  list(APPEND TUIO_LINK_LIBRARIES pthread)
 endif()
+set(TUIO_LIBRARY_TYPE SHARED STATIC)
+set(TUIO_INCLUDE_NAME TUIO)
+common_library(TUIO)
 
-add_library(TUIO_static STATIC ${TUIO_SOURCES} ${OSC_SOURCES} ${TUIO_HEADERS} ${OSC_HEADERS})
-set_target_properties(TUIO_static PROPERTIES COMPILE_DEFINITIONS "TUIO_STATIC")
-
-install(FILES ${TUIO_HEADERS}
-        DESTINATION include/TUIO COMPONENT dev)
-install(FILES ${OSC_HEADERS}
-        DESTINATION include/TUIO/oscpack/osc COMPONENT dev)
-install(FILES ${IP_HEADERS}
-        DESTINATION include/TUIO/oscpack/ip COMPONENT dev)
-install(TARGETS TUIO TUIO_static
-        ARCHIVE DESTINATION lib COMPONENT dev
-        RUNTIME DESTINATION bin COMPONENT lib
-        LIBRARY DESTINATION lib COMPONENT lib)
-
-add_executable(TuioDump TuioDump.cpp)
-target_link_libraries(TuioDump TUIO)
-install(TARGETS TuioDump DESTINATION bin COMPONENT apps)
+set(TUIODUMP_SOURCES TuioDump.cpp)
+set(TUIODUMP_LINK_LIBRARIES TUIO)
+common_application(TuioDump)
 
 if(GLUT_FOUND AND OPENGL_FOUND AND SDL_FOUND)
   include_directories(${SDL_INCLUDE_DIR})
 
-  add_executable(TuioDemo TuioDemo.cpp)
-  target_link_libraries(TuioDemo TUIO ${GLUT_LIBRARIES}
-                                  ${OPENGL_LIBRARIES} ${SDL_LIBRARY})
+  set(TUIODEMO_SOURCES TuioDemo.cpp)
+  set(TUIODEMO_LINK_LIBRARIES
+    TUIO ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} ${SDL_LIBRARY})
+  common_application(TuioDemo)
 
-  add_executable(SimpleSimulator SimpleSimulator.cpp)
-  target_link_libraries(SimpleSimulator TUIO ${GLUT_LIBRARIES}
-                                        ${OPENGL_LIBRARIES} ${SDL_LIBRARY})
-  install(TARGETS TuioDemo SimpleSimulator
-          DESTINATION bin COMPONENT apps)
+  set(SIMPLESIMULATOR_SOURCES SimpleSimulator.cpp)
+  set(SIMPLESIMULATOR_LINK_LIBRARIES
+    TUIO ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} ${SDL_LIBRARY})
+
+  common_application(SimpleSimulator)
 endif()
 
 include(PackageConfig)
-
