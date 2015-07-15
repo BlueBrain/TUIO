@@ -18,6 +18,7 @@ if(NOT TARGET cppcheck)
   add_custom_target(cppcheck)
 endif()
 
+set(TUIO_INCLUDE_NAME TUIO)
 include(Common)
 
 common_package(GLUT)
