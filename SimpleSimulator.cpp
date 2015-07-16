@@ -27,16 +27,16 @@ void SimpleSimulator::drawFrame() {
 	char id[3];
 	
 	// draw the cursors
-	std::list<TuioCursor*> cursorList = tuioServer->getTuioCursors();
-	for (std::list<TuioCursor*>::iterator tuioCursor = cursorList.begin(); tuioCursor!=cursorList.end(); tuioCursor++) {
-		std::list<TuioPoint> path = (*tuioCursor)->getPath();
+	std::list<TUIO::TuioCursor*> cursorList = tuioServer->getTuioCursors();
+	for (std::list<TUIO::TuioCursor*>::iterator tuioCursor = cursorList.begin(); tuioCursor!=cursorList.end(); tuioCursor++) {
+		std::list<TUIO::TuioPoint> path = (*tuioCursor)->getPath();
 		if (path.size()>0) {
 			
-			TuioPoint last_point = path.front();
+			TUIO::TuioPoint last_point = path.front();
 			glBegin(GL_LINES);
 			glColor3f(0.0, 0.0, 1.0);
 			
-			for (std::list<TuioPoint>::iterator point = path.begin(); point!=path.end(); point++) {
+			for (std::list<TUIO::TuioPoint>::iterator point = path.begin(); point!=path.end(); point++) {
 				glVertex3f(last_point.getX()*width, last_point.getY()*height, 0.0f);
 				glVertex3f(point->getX()*width, point->getY()*height, 0.0f);
 				last_point.update(point->getX(),point->getY());
@@ -124,8 +124,8 @@ void SimpleSimulator::processEvents()
 void SimpleSimulator::mousePressed(float x, float y) {
 	//printf("clicked %i %i\n",x,y);
 	
-	TuioCursor *match = NULL;
-	for (std::list<TuioCursor*>::iterator tuioCursor = stickyCursorList.begin(); tuioCursor!=stickyCursorList.end(); tuioCursor++) {
+	TUIO::TuioCursor *match = NULL;
+	for (std::list<TUIO::TuioCursor*>::iterator tuioCursor = stickyCursorList.begin(); tuioCursor!=stickyCursorList.end(); tuioCursor++) {
 		if ((*tuioCursor)->getDistance(x,y) < (5.0f/width)) {
 			match = (*tuioCursor);
 			break;
@@ -163,9 +163,9 @@ void SimpleSimulator::mouseReleased(float x, float y) {
 	//printf("released\n");
 	if (cursor==NULL) return;
 	
-	TuioCursor *match = NULL;
-	std::list<TuioCursor*> cursorList = tuioServer->getTuioCursors();
-	for (std::list<TuioCursor*>::iterator tuioCursor = stickyCursorList.begin(); tuioCursor!=stickyCursorList.end(); tuioCursor++) {
+	TUIO::TuioCursor *match = NULL;
+	std::list<TUIO::TuioCursor*> cursorList = tuioServer->getTuioCursors();
+	for (std::list<TUIO::TuioCursor*>::iterator tuioCursor = stickyCursorList.begin(); tuioCursor!=stickyCursorList.end(); tuioCursor++) {
 		if ((*tuioCursor)->getDistance(x,y) < (5.0f/width)) {
 			match = (*tuioCursor);
 			break;
@@ -188,9 +188,9 @@ SimpleSimulator::SimpleSimulator(const char* host, int port) {
 	screen_height = 768;
 	
 	cursor = NULL;
-	if ((strcmp(host,"default")==0) && (port==0)) tuioServer = new TuioServer();
-	else tuioServer = new TuioServer(host, port);
-	currentTime = TuioTime::getSessionTime();
+	if ((strcmp(host,"default")==0) && (port==0)) tuioServer = new TUIO::TuioServer();
+	else tuioServer = new TUIO::TuioServer(host, port);
+	currentTime = TUIO::TuioTime::getSessionTime();
 	
 	//tuioServer->enablePeriodicMessages();
 
@@ -231,7 +231,7 @@ SimpleSimulator::SimpleSimulator(const char* host, int port) {
 void SimpleSimulator::run() {
 	running=true;
 	while (running) {
-		currentTime = TuioTime::getSessionTime();
+		currentTime = TUIO::TuioTime::getSessionTime();
 		tuioServer->initFrame(currentTime);
 		processEvents();
 		tuioServer->stopUntouchedMovingCursors();

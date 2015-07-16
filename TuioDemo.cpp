@@ -21,13 +21,13 @@
 
 #include "TuioDemo.h"
 		
-void TuioDemo::addTuioObject(TuioObject *tobj) {
+void TuioDemo::addTuioObject(TUIO::TuioObject *tobj) {
 	if (verbose)
 		std::cout << "add obj " << tobj->getSymbolID() << " (" << tobj->getSessionID() << ") "<< tobj->getX() << " " << tobj->getY() << " " << tobj->getAngle() << std::endl;
 
 }
 
-void TuioDemo::updateTuioObject(TuioObject *tobj) {
+void TuioDemo::updateTuioObject(TUIO::TuioObject *tobj) {
 
 	if (verbose) 	
 		std::cout << "set obj " << tobj->getSymbolID() << " (" << tobj->getSessionID() << ") "<< tobj->getX() << " " << tobj->getY() << " " << tobj->getAngle() 
@@ -35,33 +35,33 @@ void TuioDemo::updateTuioObject(TuioObject *tobj) {
 
 }
 
-void TuioDemo::removeTuioObject(TuioObject *tobj) {
+void TuioDemo::removeTuioObject(TUIO::TuioObject *tobj) {
 
 	if (verbose)
 		std::cout << "del obj " << tobj->getSymbolID() << " (" << tobj->getSessionID() << ")" << std::endl;
 }
 
-void TuioDemo::addTuioCursor(TuioCursor *tcur) {
+void TuioDemo::addTuioCursor(TUIO::TuioCursor *tcur) {
 	
 	if (verbose) 
 		std::cout << "add cur " << tcur->getCursorID() << " (" <<  tcur->getSessionID() << ") " << tcur->getX() << " " << tcur->getY() << std::endl;
 
 }
 
-void TuioDemo::updateTuioCursor(TuioCursor *tcur) {
+void TuioDemo::updateTuioCursor(TUIO::TuioCursor *tcur) {
 
 	if (verbose) 	
 		std::cout << "set cur " << tcur->getCursorID() << " (" <<  tcur->getSessionID() << ") " << tcur->getX() << " " << tcur->getY() 
 					<< " " << tcur->getMotionSpeed() << " " << tcur->getMotionAccel() << " " << std::endl;
 }
 
-void TuioDemo::removeTuioCursor(TuioCursor *tcur) {
+void TuioDemo::removeTuioCursor(TUIO::TuioCursor *tcur) {
 	
 	if (verbose)
 		std::cout << "del cur " << tcur->getCursorID() << " (" <<  tcur->getSessionID() << ")" << std::endl;
 }
 
-void TuioDemo::refresh(TuioTime /*frameTime*/) {
+void TuioDemo::refresh(TUIO::TuioTime /*frameTime*/) {
 	//drawObjects();
 }
 
@@ -71,18 +71,18 @@ void TuioDemo::drawObjects() {
 	char id[3];
 
 	// draw the cursors
-	std::list<TuioCursor*> cursorList = tuioClient->getTuioCursors();
+	std::list<TUIO::TuioCursor*> cursorList = tuioClient->getTuioCursors();
 	tuioClient->lockCursorList();
-	for (std::list<TuioCursor*>::iterator iter = cursorList.begin(); iter!=cursorList.end(); iter++) {
-		TuioCursor *tuioCursor = (*iter);
-		std::list<TuioPoint> path = tuioCursor->getPath();
+	for (std::list<TUIO::TuioCursor*>::iterator iter = cursorList.begin(); iter!=cursorList.end(); iter++) {
+		TUIO::TuioCursor *tuioCursor = (*iter);
+		std::list<TUIO::TuioPoint> path = tuioCursor->getPath();
 		if (path.size()>0) {
 
-		TuioPoint last_point = path.front();
+		TUIO::TuioPoint last_point = path.front();
 		glBegin(GL_LINES);
 		glColor3f(0.0, 0.0, 1.0);
 		
-		for (std::list<TuioPoint>::iterator point = path.begin(); point!=path.end(); point++) {
+		for (std::list<TUIO::TuioPoint>::iterator point = path.begin(); point!=path.end(); point++) {
 			glVertex3f(last_point.getX()*width, last_point.getY()*height, 0.0f);
 			glVertex3f(point->getX()*width, point->getY()*height, 0.0f);
 			last_point.update(point->getX(),point->getY());
@@ -108,10 +108,10 @@ void TuioDemo::drawObjects() {
 	tuioClient->unlockCursorList();
 
 	// draw the objects
-	std::list<TuioObject*> objectList = tuioClient->getTuioObjects();
+	std::list<TUIO::TuioObject*> objectList = tuioClient->getTuioObjects();
 	tuioClient->lockObjectList();
-	for (std::list<TuioObject*>::iterator iter = objectList.begin(); iter!=objectList.end(); iter++) {
-		TuioObject* tuioObject = (*iter);
+	for (std::list<TUIO::TuioObject*>::iterator iter = objectList.begin(); iter!=objectList.end(); iter++) {
+		TUIO::TuioObject* tuioObject = (*iter);
 		int pos_size = height/20.0f;
 		int neg_size = -1*pos_size;
 		float xpos  = tuioObject->getX()*width;
@@ -197,7 +197,7 @@ TuioDemo::TuioDemo(int port) {
 	screen_width = 1024;
 	screen_height = 768;
 
-	tuioClient = new TuioClient(port);
+	tuioClient = new TUIO::TuioClient(port);
 	tuioClient->addTuioListener(this);
 	tuioClient->connect();
 

@@ -40,8 +40,6 @@
 #include <GL/glut.h>
 #endif
 
-using namespace TUIO;
-
 class SimpleSimulator { 
 	
 public:
@@ -51,9 +49,9 @@ public:
 	};
 	
 	void run();
-	TuioServer *tuioServer;
-	TuioCursor *cursor;
-	std::list<TuioCursor*> stickyCursorList;
+	TUIO::TuioServer *tuioServer;
+	TUIO::TuioCursor *cursor;
+	std::list<TUIO::TuioCursor*> stickyCursorList;
 	
 private:
 	void drawFrame();
@@ -66,12 +64,11 @@ private:
 	int width, height;
 	int screen_width, screen_height;
 	int window_width, window_height;
-	TuioTime currentTime;
+	TUIO::TuioTime currentTime;
 	
 	void mousePressed(float x, float y);
 	void mouseReleased(float x, float y);
 	void mouseDragged(float x, float y);
-	int s_id;
 };
 
 #endif /* INCLUDED_SimpleSimulator_H */
