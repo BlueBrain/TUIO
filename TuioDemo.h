@@ -43,9 +43,7 @@
 #include <GL/glut.h>
 #endif
 
-using namespace TUIO;
-
-class TuioDemo : public TuioListener { 
+class TuioDemo : public TUIO::TuioListener { 
 	
 public:
 	TuioDemo(int port);
@@ -54,18 +52,18 @@ public:
 		delete tuioClient;
 	}
 	
-	void addTuioObject(TuioObject *tobj);
-	void updateTuioObject(TuioObject *tobj);
-	void removeTuioObject(TuioObject *tobj);
+	void addTuioObject(TUIO::TuioObject *tobj);
+	void updateTuioObject(TUIO::TuioObject *tobj);
+	void removeTuioObject(TUIO::TuioObject *tobj);
 	
-	void addTuioCursor(TuioCursor *tcur);
-	void updateTuioCursor(TuioCursor *tcur);
-	void removeTuioCursor(TuioCursor *tcur);
+	void addTuioCursor(TUIO::TuioCursor *tcur);
+	void updateTuioCursor(TUIO::TuioCursor *tcur);
+	void removeTuioCursor(TUIO::TuioCursor *tcur);
 	
-	void refresh(TuioTime frameTime);
+	void refresh(TUIO::TuioTime frameTime);
 	
 	void run();
-	TuioClient *tuioClient;
+	TUIO::TuioClient *tuioClient;
 	
 private:
 	void drawObjects();
