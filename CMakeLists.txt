@@ -32,7 +32,7 @@ else()
   add_definitions(/wd4267)
 endif()
 if(CMAKE_COMPILER_IS_CLANG)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-header-hygiene -Wno-deprecated-declarations -Wno-unused-private-field")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
 endif()
 
 add_definitions(-DOSC_HOST_LITTLE_ENDIAN)
