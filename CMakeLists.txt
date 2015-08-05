@@ -11,14 +11,6 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake
   ${CMAKE_SOURCE_DIR}/CMake/common)
 include(GitExternal)
 
-# WAR: no cppcheck desired
-set(__add_cppcheck 1)
-function(add_cppcheck)
-endfunction()
-if(NOT TARGET cppcheck)
-  add_custom_target(cppcheck)
-endif()
-
 set(TUIO_INCLUDE_NAME TUIO)
 include(Common)
 
@@ -94,6 +86,7 @@ endif()
 
 set(OSC_INCLUDE_NAME osc)
 set(OSC_LIBRARY_TYPE SHARED STATIC)
+set(OSC_OMIT_CHECK_TARGETS ON)
 common_library(OSC)
 
 set(TUIO_LINK_LIBRARIES OSC)
@@ -104,10 +97,12 @@ else()
 endif()
 set(TUIO_LIBRARY_TYPE SHARED STATIC)
 set(TUIO_INCLUDE_NAME TUIO)
+set(TUIO_OMIT_CHECK_TARGETS ON)
 common_library(TUIO)
 
 set(TUIODUMP_SOURCES TuioDump.cpp)
 set(TUIODUMP_LINK_LIBRARIES TUIO)
+set(TUIODUMP_OMIT_CHECK_TARGETS ON)
 common_application(TuioDump)
 
 if(GLUT_FOUND AND OPENGL_FOUND AND SDL_FOUND)
@@ -116,12 +111,13 @@ if(GLUT_FOUND AND OPENGL_FOUND AND SDL_FOUND)
   set(TUIODEMO_SOURCES TuioDemo.cpp)
   set(TUIODEMO_LINK_LIBRARIES
     TUIO ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} ${SDL_LIBRARY})
+  set(TUIODEMO_OMIT_CHECK_TARGETS ON)
   common_application(TuioDemo)
 
   set(SIMPLESIMULATOR_SOURCES SimpleSimulator.cpp)
   set(SIMPLESIMULATOR_LINK_LIBRARIES
     TUIO ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES} ${SDL_LIBRARY})
-
+  set(SIMPLESIMULATOR_OMIT_CHECK_TARGETS ON)
   common_application(SimpleSimulator)
 endif()
 
