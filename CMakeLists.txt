@@ -19,86 +19,19 @@ common_package(OpenGL)
 common_package(SDL)
 common_package_post()
 
-if(NOT MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-result")
-else()
+if(MSVC)
   add_definitions(/wd4267)
 endif()
 if(CMAKE_COMPILER_IS_CLANG)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+  set(COMMON_CXX_FLAGS "${COMMON_CXX_FLAGS} -Wno-deprecated-declarations")
 endif()
 
 add_definitions(-DOSC_HOST_LITTLE_ENDIAN)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/TUIO
                     ${CMAKE_CURRENT_LIST_DIR}/oscpack)
 
-set(TUIO_PUBLIC_HEADERS
-  TUIO/TuioClient.h
-  TUIO/TuioContainer.h
-  TUIO/TuioCursor.h
-  TUIO/TuioListener.h
-  TUIO/TuioObject.h
-  TUIO/TuioPoint.h
-  TUIO/TuioServer.h
-  TUIO/TuioTime.h
-)
-
-set(TUIO_SOURCES
-  TUIO/TuioClient.cpp
-  TUIO/TuioServer.cpp
-  TUIO/TuioTime.cpp
-)
-
-set(OSC_PUBLIC_HEADERS
-  oscpack/osc/MessageMappingOscPacketListener.h
-  oscpack/osc/OscOutboundPacketStream.h
-  oscpack/osc/OscReceivedElements.h
-  oscpack/osc/OscException.h
-  oscpack/osc/OscPacketListener.h
-  oscpack/osc/OscTypes.h
-  oscpack/osc/OscHostEndianness.h
-  oscpack/osc/OscPrintReceivedElements.h
-  oscpack/ip/IpEndpointName.h
-  oscpack/ip/NetworkingUtils.h
-  oscpack/ip/PacketListener.h
-  oscpack/ip/TimerListener.h
-  oscpack/ip/UdpSocket.h
-)
-
-set(OSC_SOURCES
-  oscpack/osc/OscTypes.cpp
-  oscpack/osc/OscOutboundPacketStream.cpp
-  oscpack/osc/OscReceivedElements.cpp
-  oscpack/osc/OscPrintReceivedElements.cpp
-)
-
-if(MSVC)
-  list(APPEND OSC_SOURCES
-    oscpack/ip/win32/NetworkingUtils.cpp
-    oscpack/ip/win32/UdpSocket.cpp
-  )
-else()
-  list(APPEND OSC_SOURCES
-    oscpack/ip/posix/NetworkingUtils.cpp
-    oscpack/ip/posix/UdpSocket.cpp
-  )
-endif()
-
-set(OSC_INCLUDE_NAME osc)
-set(OSC_LIBRARY_TYPE SHARED STATIC)
-set(OSC_OMIT_CHECK_TARGETS ON)
-common_library(OSC)
-
-set(TUIO_LINK_LIBRARIES OSC)
-if(MSVC)
-  list(APPEND TUIO_LINK_LIBRARIES mswsock winmm ws2_32)
-else()
-  list(APPEND TUIO_LINK_LIBRARIES pthread)
-endif()
-set(TUIO_LIBRARY_TYPE SHARED STATIC)
-set(TUIO_INCLUDE_NAME TUIO)
-set(TUIO_OMIT_CHECK_TARGETS ON)
-common_library(TUIO)
+add_subdirectory(oscpack)
+add_subdirectory(TUIO)
 
 set(TUIODUMP_SOURCES TuioDump.cpp)
 set(TUIODUMP_LINK_LIBRARIES TUIO)
@@ -121,4 +54,4 @@ if(GLUT_FOUND AND OPENGL_FOUND AND SDL_FOUND)
   common_application(SimpleSimulator)
 endif()
 
-include(PackageConfig)
+include(CommonPackageConfig)
