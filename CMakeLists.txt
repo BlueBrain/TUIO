@@ -1,11 +1,7 @@
 
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
-project(TUIO)
-
-set(VERSION_MAJOR "1")
-set(VERSION_MINOR "4")
-set(VERSION_PATCH "0")
-set(VERSION_ABI 1)
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
+project(TUIO VERSION 1.4.0)
+set(TUIO_VERSION_ABI 1)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake
   ${CMAKE_SOURCE_DIR}/CMake/common)
@@ -14,10 +10,10 @@ include(GitExternal)
 set(TUIO_INCLUDE_NAME TUIO)
 include(Common)
 
-common_package(GLUT)
-common_package(OpenGL)
-common_package(SDL)
-common_package_post()
+common_find_package(GLUT)
+common_find_package(OpenGL)
+common_find_package(SDL)
+common_find_package_post()
 
 if(NOT MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-result")
