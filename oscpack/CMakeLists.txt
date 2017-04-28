@@ -1,5 +1,5 @@
 
-set(OSC_PUBLIC_HEADERS
+set(OSCPACK_PUBLIC_HEADERS
   osc/MessageMappingOscPacketListener.h
   osc/OscOutboundPacketStream.h
   osc/OscReceivedElements.h
@@ -15,7 +15,7 @@ set(OSC_PUBLIC_HEADERS
   ip/UdpSocket.h
 )
 
-set(OSC_SOURCES
+set(OSCPACK_SOURCES
   osc/OscTypes.cpp
   osc/OscOutboundPacketStream.cpp
   osc/OscReceivedElements.cpp
@@ -23,17 +23,19 @@ set(OSC_SOURCES
 )
 
 if(MSVC)
-  list(APPEND OSC_SOURCES
+  list(APPEND OSCPACK_SOURCES
     ip/win32/NetworkingUtils.cpp
     ip/win32/UdpSocket.cpp
   )
 else()
-  list(APPEND OSC_SOURCES
+  list(APPEND OSCPACK_SOURCES
     ip/posix/NetworkingUtils.cpp
     ip/posix/UdpSocket.cpp
   )
 endif()
 
-set(OSC_INCLUDE_NAME osc)
-set(OSC_OMIT_CHECK_TARGETS ON)
-common_library(OSC)
+set(OSCPACK_INCLUDE_NAME oscpack) # not TUIO
+set(OSCPACK_OMIT_CHECK_TARGETS ON)
+set(OSCPACK_OMIT_LIBRARY_HEADER ON)
+set(OSCPACK_OMIT_VERSION_HEADERS ON)
+common_library(oscpack)

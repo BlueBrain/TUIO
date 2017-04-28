@@ -16,7 +16,7 @@ set(TUIO_SOURCES
   TuioTime.cpp
 )
 
-set(TUIO_LINK_LIBRARIES PUBLIC OSC)
+set(TUIO_LINK_LIBRARIES PUBLIC oscpack)
 if(MSVC)
   list(APPEND TUIO_LINK_LIBRARIES PRIVATE mswsock winmm ws2_32)
 else()
