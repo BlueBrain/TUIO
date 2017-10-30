@@ -4,6 +4,7 @@ set(TUIO_PUBLIC_HEADERS
   TuioContainer.h
   TuioCursor.h
   TuioListener.h
+  TuioLog.h
   TuioObject.h
   TuioPoint.h
   TuioServer.h
@@ -12,6 +13,7 @@ set(TUIO_PUBLIC_HEADERS
 
 set(TUIO_SOURCES
   TuioClient.cpp
+  TuioLog.cpp
   TuioServer.cpp
   TuioTime.cpp
 )

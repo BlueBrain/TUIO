@@ -20,6 +20,7 @@
  */
 
 #include "TuioClient.h"
+#include "TuioLog.h"
 
 using namespace TUIO;
 using namespace osc;
@@ -81,7 +82,7 @@ TuioClient::TuioClient(int port)
     try {
         socket = new UdpListeningReceiveSocket(IpEndpointName( IpEndpointName::ANY_ADDRESS, port ), this );
     } catch (std::exception &) {
-        std::cerr << "could not bind to UDP port " << port << std::endl;
+        printLog(LogLevel::ERROR, "could not bind to UDP port " + std::to_string(port));
         socket = NULL;
     }
 
@@ -89,7 +90,7 @@ TuioClient::TuioClient(int port)
         if (!socket->IsBound()) {
             delete socket;
             socket = NULL;
-        } else std::cout << "listening to TUIO messages on UDP port " << port << std::endl;
+        } else printLog(LogLevel::INFO, "listening to TUIO messages on UDP port " + std::to_string(port));
     }
 }
 
@@ -107,7 +108,7 @@ void TuioClient::ProcessBundle( const ReceivedBundle& b, const IpEndpointName& r
                 ProcessMessage( ReceivedMessage(*i), remoteEndpoint);
         }
     } catch (MalformedBundleException& e) {
-        std::cerr << "malformed OSC bundle: " << e.what() << std::endl;
+        printLog(LogLevel::ERROR, std::string("malformed OSC bundle: ") + e.what());
     }
 
 }
@@ -433,7 +434,7 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
             }
         }
     } catch( Exception& e ){
-        std::cerr << "error parsing TUIO message: "<< msg.AddressPattern() <<  " - " << e.what() << std::endl;
+        printLog(LogLevel::ERROR, std::string("error parsing TUIO message: ") + msg.AddressPattern() +  " - " + e.what());
     }
 }
 
@@ -443,7 +444,7 @@ void TuioClient::ProcessPacket( const char *data, int size, const IpEndpointName
         if(p.IsBundle()) ProcessBundle( ReceivedBundle(p), remoteEndpoint);
         else ProcessMessage( ReceivedMessage(p), remoteEndpoint);
     } catch (MalformedBundleException& e) {
-        std::cerr << "malformed OSC bundle: " << e.what() << std::endl;
+        printLog(LogLevel::ERROR, std::string("malformed OSC bundle: ") + e.what());
     }
 }
 
